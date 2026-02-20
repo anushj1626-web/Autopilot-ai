@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>AutoPilot AI Dashboard</title>
+
+<style>
+
+body {
+font-family: Arial;
+background-color: #0f172a;
+color: white;
+text-align: center;
+}
+
+button {
+padding: 12px;
+font-size: 18px;
+margin: 20px;
+cursor: pointer;
+background-color: white;
+color: black;
+border: none;
+}
+
+table {
+margin: auto;
+border-collapse: collapse;
+width: 70%;
+}
+
+th, td {
+padding: 12px;
+border: 1px solid white;
+}
+
+th {
+background-color: #1e293b;
+}
+
+.high {
+color: red;
+font-weight: bold;
+}
+
+.medium {
+color: yellow;
+font-weight: bold;
+}
+
+.no {
+color: lightgreen;
+font-weight: bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>AutoPilot AI Dashboard</h1>
+
+<button onclick="loadTasks()">Generate Tasks</button>
+
+<table id="taskTable">
+
+<tr>
+<th>Task Name</th>
+<th>Assigned To</th>
+<th>Efficiency</th>
+<th>Delay Risk</th>
+</tr>
+
+</table>
+
+
+<script>
+
+async function loadTasks() {
+
+let response = await fetch("http://127.0.0.1:8000/generate");
+
+let tasks = await response.json();
+
+let table = document.getElementById("taskTable");
+
+table.innerHTML = `
+<tr>
+<th>Task Name</th>
+<th>Assigned To</th>
+<th>Efficiency</th>
+<th>Delay Risk</th>
+</tr>
+`;
+
+tasks.forEach(task => {
+
+let row = table.insertRow();
+
+row.insertCell(0).innerText = task.task_name;
+row.insertCell(1).innerText = task.assigned_to;
+row.insertCell(2).innerText = task.efficiency;
+
+let riskCell = row.insertCell(3);
+riskCell.innerText = task.delay_risk;
+
+if(task.delay_risk == "HIGH")
+riskCell.className = "high";
+
+else if(task.delay_risk == "MEDIUM")
+riskCell.className = "medium";
+
+else
+riskCell.className = "no";
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
